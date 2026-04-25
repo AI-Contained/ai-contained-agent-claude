@@ -3,7 +3,6 @@ name: 🛠️ CI
 on:
   push:
     branches: ['**']
-  pull_request:
   workflow_dispatch:
     inputs:
       ref:
@@ -47,14 +46,14 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch,prefix=branch-
-            type=raw,value=smoke-test,enable=${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+            type=raw,value=smoke-test,enable=${{ github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
       - uses: docker/build-push-action@v5
         with:
-          load: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+          load: ${{ github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
           push: ${{ github.event_name == 'push' && github.ref != 'refs/heads/main' }}
           tags: ${{ steps.meta.outputs.tags }}
       - name: Smoke test
-        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        if: github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: docker run --rm ghcr.io/${{ github.repository }}:smoke-test --version
 
   release:
