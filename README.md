@@ -1,4 +1,4 @@
-# agent-claude
+# ai-contained-agent-claude
 
 A minimal, isolated Docker container for running [Claude Code](https://code.claude.com) as a non-root user with no access to your host filesystem except through explicit MCP servers.
 
@@ -28,13 +28,13 @@ This creates a `claude-config/` directory containing:
 ## Building
 
 ```bash
-docker build -t agent-claude:1.0.0 .
+docker build -t ai-contained-agent-claude:1.0.0 .
 ```
 
 Pin a specific Claude version:
 
 ```bash
-docker build --build-arg CLAUDE_VERSION=2.1.114 -t agent-claude:1.0.0 .
+docker build --build-arg CLAUDE_VERSION=2.1.114 -t ai-contained-agent-claude:1.0.0 .
 ```
 
 ## Running
@@ -43,7 +43,7 @@ docker build --build-arg CLAUDE_VERSION=2.1.114 -t agent-claude:1.0.0 .
 docker run -it --rm \
   --user $(id -u):$(id -g) \
   -v $(pwd)/claude-config:/config \
-  agent-claude:1.0.0
+  ai-contained-agent-claude:1.0.0
 ```
 
 Resume a previous session:
@@ -52,7 +52,7 @@ Resume a previous session:
 docker run -it --rm \
   --user $(id -u):$(id -g) \
   -v $(pwd)/claude-config:/config \
-  agent-claude:1.0.0 --resume <session-id>
+  ai-contained-agent-claude:1.0.0 --resume <session-id>
 ```
 
 ## Connecting MCP Servers
@@ -62,7 +62,7 @@ docker run -it --rm \
   --user $(id -u):$(id -g) \
   --network mcp-network \
   -v $(pwd)/claude-config:/config \
-  agent-claude:1.0.0 \
+  ai-contained-agent-claude:1.0.0 \
   --strict-mcp-config \
   --mcp-config '{"mcpServers":{"my-mcp":{"type":"http","url":"http://my-mcp-server:8080/mcp"}}}'
 ```
