@@ -52,6 +52,8 @@ jobs:
           load: ${{ github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
           push: ${{ github.event_name == 'push' && github.ref != 'refs/heads/main' }}
           tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Smoke test
         if: github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         run: docker run --rm ghcr.io/${{ github.repository }}:smoke-test --version
@@ -91,8 +93,11 @@ jobs:
             type=semver,pattern={{major}}.{{minor}},value=${{ steps.semantic.outputs.new_release_version }}
             type=semver,pattern={{major}},value=${{ steps.semantic.outputs.new_release_version }}
             type=raw,value=latest
+      # Shares the GHA cache populated by the build job, so this is effectively free
       - uses: docker/build-push-action@v5
         if: steps.semantic.outputs.new_release_published == 'true'
         with:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
