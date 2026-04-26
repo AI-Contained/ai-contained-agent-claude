@@ -37,7 +37,7 @@ func mirror(srcRoot, dstRoot string, log io.Writer) error {
 		} else if err := copyFile(srcPath, dstPath); err != nil {
 			return err
 		}
-		fmt.Fprintln(log, rel)
+		fmt.Fprintf(log, "bootstrap(copy): %s\n", dstPath)
 		return nil
 	})
 }
