@@ -132,6 +132,6 @@ var _ = Describe("mirror", func() {
 		Expect(os.Mkdir(filepath.Join(dst, "sub"), 0500)).To(Succeed())
 		Expect(os.Chmod(filepath.Join(dst, "sub"), 0500)).To(Succeed())
 
-		Expect(mirror(src, dst, log)).NotTo(Succeed())
+		Expect(mirror(src, dst, log)).To(MatchError(fs.ErrPermission))
 	})
 })

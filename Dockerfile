@@ -29,9 +29,13 @@ FROM scratch
 ARG CLAUDE_CONFIG_DIR
 
 ENV HOME=/home/agent \
-    CLAUDE_CONFIG_DIR=${CLAUDE_CONFIG_DIR}
+    CLAUDE_CONFIG_DIR=${CLAUDE_CONFIG_DIR} \
+    # During a bootstrap and our CLAUDE_CONFIG_DIR is empty
+    # it will be populated with the content of TEMPLATE_DIR
+    TEMPLATE_DIR=/template-config
 # Supresses some warnings from claude
-ENV PATH=${HOME}/.local/bin
+ENV PATH=${HOME}/.local/bin:/usr/local/bin \
+    CLAUDE_BIN=${HOME}/.local/bin/claude
 
 # A place for claude to store your session and your anthropic credentials
 #  To bootstrap this MUST be a copy of template-config
@@ -42,6 +46,7 @@ VOLUME ${CLAUDE_CONFIG_DIR}
 #  from a TRUSTED environment.
 WORKDIR /ai_contained
 
+COPY /template-config ${TEMPLATE_DIR}
 COPY --from=builder /lib/ld-musl-*.so.1 /lib/
 COPY --from=builder /lib/libc.musl-*.so.1 /lib/
 COPY --from=builder ${HOME} ${HOME}

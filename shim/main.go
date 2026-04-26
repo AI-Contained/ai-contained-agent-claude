@@ -15,6 +15,8 @@ func mirror(src, dst string, log io.Writer) error {
 	return fmt.Errorf("mirror not implemented")
 }
 
+// TODO raise an error/exception if not set (die) --
+// dockerfile should be the source of truth
 func envOr(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
 		return v
@@ -23,13 +25,14 @@ func envOr(key, fallback string) string {
 }
 
 func main() {
-	src := envOr("SRC_TEMPLATE_CONFIG", "/opt/template-config")
-	dst := envOr("DST_TEMPLATE_CONFIG", "/config")
+	src := envOr("TEMPLATE_DIR", "/template-config")
+	dst := envOr("CLAUDE_CONFIG_DIR", "/config")
 	if err := mirror(src, dst, os.Stderr); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	claude := envOr("CLAUDE_PATH", "/home/agent/.local/bin/claude")
+  // TODO expand /home/agent into $HOME
+	claude := envOr("CLAUDE_BIN", "/home/agent/.local/bin/claude")
 	if err := syscall.Exec(claude,
 		append([]string{filepath.Base(claude)}, os.Args[1:]...),
 		os.Environ()); err != nil {
