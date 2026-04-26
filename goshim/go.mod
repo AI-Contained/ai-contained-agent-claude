@@ -1,4 +1,4 @@
-module shim
+module goshim
 
 go 1.25
 

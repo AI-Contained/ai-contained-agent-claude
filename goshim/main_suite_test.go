@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestShim(t *testing.T) {
+func TestGoshim(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Shim Suite")
+	RunSpecs(t, "Goshim Suite")
 }
